@@ -1,4 +1,4 @@
-package com.sitrica.serverinstances;
+package com.skungee.serverinstances;
 
 import java.io.File;
 import java.net.UnknownHostException;
@@ -24,10 +24,10 @@ public class Bootloader extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		DATA_FOLDER = new File(getDataFolder().getParentFile(), "ServerInstances");
+		DATA_FOLDER = getDataFolder().toPath().toAbsolutePath().getParent().getParent().getParent().getParent().getParent().toFile();
 		if (!DATA_FOLDER.exists())
 			return;
-		configuration = YamlConfiguration.loadConfiguration(new File(DATA_FOLDER, "config.yml"));
+		configuration = YamlConfiguration.loadConfiguration(new File(DATA_FOLDER, "serverinstances-configuration.yml"));
 		try {
 			japson = new JapsonClient(configuration.getString("bootloader.address-bind", "127.0.0.1"), configuration.getInt("bootloader.port", 6110))
 					.setPassword(configuration.getString("bootloader.password", "serverinstances"))

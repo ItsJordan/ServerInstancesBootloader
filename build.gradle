@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
 	id 'com.github.johnrengelman.shadow' version '6.1.0'
 	id 'maven-publish'
@@ -10,17 +8,13 @@ plugins {
 jar.archiveName = project.name + '.jar'
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	jcenter()
 
 	// Spigot
 	maven {
 		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-	}
-
-	// Bungeecord
-	maven {
-		url "https://oss.sonatype.org/content/repositories/snapshots"
 	}
 
 	maven {
@@ -36,16 +30,13 @@ repositories {
 dependencies {
 
 	// Nullable annotation
-	implementation (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.600')
+	compileOnly (group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.2.600')
 
 	// Spigot
-	implementation (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.3-R0.1-SNAPSHOT')
-
-	// Bungeecord
-	implementation (group: 'net.md-5', name: 'bungeecord-api', version: '1.16-R0.4-SNAPSHOT')
+	compileOnly (group: 'org.spigotmc', name: 'spigot-api', version: '1.16.4-R0.1-SNAPSHOT')
 
 	// Japson
-	shadow (group: 'com.sitrica', name: 'japson-beta', version: '1.1.3.4-SNAPSHOT')
+	implementation (group: 'com.sitrica', name: 'japson-beta', version: '1.1.3.7-SNAPSHOT')
 
 }
 
@@ -73,16 +64,23 @@ dependencies {
 }*/
 
 processResources {
-	filter ReplaceTokens, tokens: ["version": project.property("version")]
 	from (sourceSets.main.resources.srcDirs) {
+		expand 'version': project.property("version")
 		include '*.yml'
 	}
 }
 
 shadowJar {
-	configurations = [project.configurations.shadow]
 	archiveVersion = version
 	baseName = project.name
 	classifier = ''
+
+	relocate 'com.sitrica.japson.gson', 'com.google.gson'
+
 	minimize()
+
+	dependencies {
+		exclude("org/checkerframework/**")
+		exclude("com/sitrica/japson/gson/**")
+	}
 }

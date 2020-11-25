@@ -1,5 +1,5 @@
 name: ServerInstancesBootloader
 authors: [Skungee]
-version: @version@
+version: ${version}
 api-version: 1.13
-main: com.sitrica.serverinstances.Bootloader
+main: com.skungee.serverinstances.Bootloader
